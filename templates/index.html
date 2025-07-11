@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Rancho</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="ranch-header">
+            <img src="https://cdn-icons-png.flaticon.com/512/194/194132.png" alt="Logo Rancho" class="ranch-logo">
+            <h1 class="welcome-title">Bienvenido al<br>Sistema de Gestión Ganadera</h1>
+        </div>
+
+        <div class="login-card">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="login-alert login-alert-{{ category }}">
+                            <i class="fas {% if category == 'success' %}fa-check-circle{% else %}fa-exclamation-triangle{% endif %}"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form class="login-form" action="{{ url_for('login') }}" method="post">
+                <div class="input-group">
+                    <label class="input-label">
+                        <i class="fas fa-fingerprint"></i>
+                        Código de Acceso:
+                    </label>
+                    <input 
+                        type="password" 
+                        name="codigo" 
+                        placeholder="Ingrese su código de 4 dígitos"
+                        pattern="\d{4}"
+                        title="4 dígitos numéricos"
+                        required
+                        class="ranch-input"
+                    >
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-hat-cowboy"></i>
+                    Ingresar al Sistema
+                </button>
+            </form>
+        </div>
+
+        <div class="ranch-footer">
+            <p class="safety-message">
+                <i class="fas fa-shield-alt"></i>
+                Sistema seguro de gestión ganadera
+            </p>
+        </div>
+    </div>
+</body>
+</html>

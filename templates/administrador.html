@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <div class="admin-container">
+        <header class="admin-header">
+            <div class="admin-branding">
+                <img src="https://cdn-icons-png.flaticon.com/512/194/194132.png" 
+                     alt="Logo Rancho" 
+                     class="admin-logo">
+                <div>
+                    <h1 class="admin-title">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Panel de Administración
+                    </h1>
+                    <div class="welcome-message">
+                        <i class="fas fa-hand-wave"></i> Bienvenido, <strong>{{ nombre_admin }}</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="admin-actions">
+                <a href="{{ url_for('index') }}" class="admin-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Cerrar Sesión
+                </a>
+            </div>
+        </header>
+
+        <!-- Sección de Agregar Trabajador como desplegable -->
+        <section class="data-section collapsible-section">
+            <div class="section-header" onclick="toggleSection('agregar-trabajador')">
+                <h2><i class="fas fa-user-plus"></i> Agregar Nuevo Trabajador</h2>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="section-content" id="agregar-trabajador">
+                <form class="ranch-form" action="{{ url_for('agregar_trabajador') }}" method="post">
+                    <div class="form-group">
+                        <label class="input-label">
+                            <i class="fas fa-user"></i>
+                            Nombre del Trabajador:
+                        </label>
+                        <input 
+                            type="text" 
+                            name="nombre" 
+                            placeholder="Ej: Juan Pérez"
+                            required
+                            class="ranch-input"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="input-label">
+                            <i class="fas fa-fingerprint"></i>
+                            Código de Acceso:
+                        </label>
+                        <input 
+                            type="text" 
+                            name="codigo" 
+                            placeholder="Ej: 1234"
+                            pattern="\d{4}"
+                            title="El código debe tener 4 dígitos numéricos"
+                            required
+                            class="ranch-input"
+                        >
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="ranch-button primary">
+                            <i class="fas fa-save"></i>
+                            Guardar Trabajador
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Sección de Trabajadores -->
+        <section class="data-section">
+            <h2><i class="fas fa-users"></i> Trabajadores</h2>
+            <div class="workers-list">
+                {% for trabajador in trabajadores %}
+                <div class="worker-card">
+                    <div class="worker-header" onclick="toggleReports('{{ trabajador.codigo }}')">
+                        <div class="worker-info">
+                            <h3>{{ trabajador.nombre }}</h3>
+                            <span class="total-reports">{{ trabajador.total_reportes }} reportes</span>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="worker-reports" id="reports-{{ trabajador.codigo }}">
+                        <table class="reports-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Código Animal</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reporte in reportes %}
+                                {% if reporte.codigo_usuario == trabajador.codigo %}
+                                <tr>
+                                    <td>{{ reporte.fecha }} {{ reporte.hora }}</td>
+                                    <td>{{ reporte.codigo_ganado }}</td>
+                                    <td>
+                                        <a href="{{ url_for('eliminar_reporte', reporte_id=reporte.id) }}" 
+                                           class="action-btn delete-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Sección de Reportes Semanales -->
+        <section class="data-section">
+            <h2><i class="fas fa-calendar-alt"></i> Reportes Semanales (Viernes a Jueves)</h2>
+            <div class="weekly-reports">
+                {% for semana in semanas %}
+                <div class="week-card">
+                    <div class="week-header" onclick="toggleWeek('{{ semana.semana }}')">
+                        <div class="week-title">
+                            <i class="fas fa-chevron-down"></i>
+                            {{ semana.semana }}
+                        </div>
+                        <div class="week-actions">
+                            <a href="{{ url_for('exportar_reporte_semanal', semana=semana.semana) }}" 
+                               class="action-btn download-btn" title="Descargar reporte">
+                                <i class="fas fa-file-excel"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="week-details" id="week-{{ semana.semana }}">
+                        <table class="styled-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Trabajador</th>
+                                    <th>Código Animal</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reporte in reportes_semanales %}
+                                {% if reporte.semana == semana.semana %}
+                                <tr>
+                                    <td>{{ reporte.fecha }}</td>
+                                    <td>{{ reporte.hora }}</td>
+                                    <td>{{ reporte.nombre }}</td>
+                                    <td>{{ reporte.codigo_ganado }}</td>
+                                    <td>
+                                        <a href="{{ url_for('eliminar_reporte', reporte_id=reporte.id) }}" 
+                                           class="action-btn delete-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Sección de Gestión de Tareas -->
+        <section class="data-section collapsible-section">
+            <div class="section-header" onclick="toggleSection('gestion-tareas')">
+                <h2><i class="fas fa-tasks"></i> Gestión de Tareas</h2>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="section-content" id="gestion-tareas">
+                <!-- Formulario de creación de tareas -->
+                <div class="task-form">
+                    <form class="ranch-form" action="{{ url_for('crear_tarea') }}" method="post">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nombre de la Tarea:</label>
+                                <input type="text" name="nombre" required class="ranch-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Tiempo Estimado:</label>
+                                <input type="text" name="tiempo_estimado" placeholder="Ej: 2 horas" required class="ranch-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Instrucciones:</label>
+                                <textarea name="instrucciones" rows="3" required class="ranch-input"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Días Asignados:</label>
+                                <div class="day-selector">
+                                    {% for day in ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] %}
+                                    <label class="day-checkbox">
+                                        <input type="checkbox" name="dias" value="{{ day }}">
+                                        {{ day[:3] }}
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Horario:</label>
+                                <input type="text" name="horas" placeholder="Ej: 08:00 - 16:00" required class="ranch-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Asignar a:</label>
+                                <div class="worker-selector">
+                                    {% for trabajador in trabajadores %}
+                                    {% if trabajador.tipo == 'trabajador' %}
+                                    <label class="worker-checkbox">
+                                        <input type="checkbox" name="trabajadores" value="{{ trabajador.codigo }}">
+                                        {{ trabajador.nombre }} ({{ trabajador.codigo }})
+                                    </label>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="ranch-button primary">
+                            <i class="fas fa-save"></i> Crear Tarea
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Tareas Semanales con opción de eliminar semana -->
+                <div class="data-section">
+                    <h3><i class="fas fa-calendar-week"></i> Tareas Semanales</h3>
+                    
+                    {% if tareas_semanales %}
+                    {% for semana in tareas_semanales %}
+                    <div class="week-task-card">
+                        <div class="week-task-header" onclick="toggleWeekTasks('{{ semana.semana }}')">
+                            <div class="week-title">
+                                <i class="fas fa-chevron-down"></i>
+                                Semana {{ semana.semana }}
+                                <span class="badge">{{ semana.total_tareas }} tareas</span>
+                                <span class="badge">{{ semana.total_asignaciones }} asignaciones</span>
+                            </div>
+                            <div class="week-actions">
+                                <a href="{{ url_for('exportar_tareas_semana_excel', semana=semana.semana) }}" 
+                                   class="action-btn download-btn" title="Descargar semana completa">
+                                    <i class="fas fa-file-excel"></i>
+                                </a>
+                                <a href="{{ url_for('eliminar_semana_tareas', semana=semana.semana) }}" 
+                                   class="action-btn delete-btn" title="Eliminar semana completa"
+                                   onclick="return confirm('¿Estás seguro de eliminar TODAS las tareas de esta semana?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="week-task-details" id="week-tasks-{{ semana.semana }}">
+                            <div class="days-container">
+                                {% set dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] %}
+                                {% for dia in dias_semana %}
+                                    {% set tareas_dia = [] %}
+                                    {% for tarea in tareas_detalle[semana.semana] %}
+                                        {% if dia in tarea.dias_asignados.split(',') %}
+                                            {% set _ = tareas_dia.append(tarea) %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if tareas_dia %}
+                                    <div class="day-column">
+                                        <h4>{{ dia }}</h4>
+                                        
+                                        {% for tarea in tareas_dia %}
+                                        <div class="task-item">
+                                            <div class="task-item-header">
+                                                <h5>{{ tarea.nombre }}</h5>
+                                                <div class="task-actions">
+                                                    <a href="{{ url_for('eliminar_tarea', tarea_id=tarea.id) }}" 
+                                                       class="action-btn delete-btn" title="Eliminar tarea"
+                                                       onclick="return confirm('¿Estás seguro de eliminar esta tarea?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <p><i class="fas fa-clock"></i> {{ tarea.tiempo_estimado }}</p>
+                                            <p><i class="fas fa-users"></i> {{ tarea.trabajadores }}</p>
+                                            <p><i class="fas fa-calendar-day"></i> {{ tarea.horas }}</p>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="no-tasks">
+                        <i class="fas fa-calendar-times"></i>
+                        No hay tareas programadas
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Todas las Asignaciones -->
+                <div class="task-list">
+                    <h3><i class="fas fa-list-check"></i> Todas las Asignaciones</h3>
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Tarea</th>
+                                <th>Trabajador</th>
+                                <th>Estado</th>
+                                <th>Tiempo Estimado</th>
+                                <th>Fecha Asignación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for asignacion in asignaciones %}
+                            <tr>
+                                <td>{{ asignacion.nombre }}</td>
+                                <td>{{ asignacion.nombre_usuario }}</td>
+                                <td class="task-status {{ asignacion.estado }}">
+                                    {{ asignacion.estado|replace('_', ' ')|title }}
+                                </td>
+                                <td>{{ asignacion.tiempo_estimado }}</td>
+                                <td>{{ asignacion.fecha_asignacion }}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="{{ url_for('eliminar_asignacion', asignacion_id=asignacion.id) }}" 
+                                           class="action-btn delete-btn" title="Eliminar asignación"
+                                           onclick="return confirm('¿Estás seguro de eliminar esta asignación?')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                        <a href="{{ url_for('exportar_tareas_excel') }}" 
+                                           class="action-btn download-btn" title="Exportar todo">
+                                            <i class="fas fa-file-excel"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleReports(codigo) {
+            const reports = document.getElementById(`reports-${codigo}`);
+            reports.classList.toggle('active');
+            const icon = reports.previousElementSibling.querySelector('.fa-chevron-down');
+            icon.classList.toggle('rotate');
+        }
+
+        function toggleWeek(semana) {
+            const weekDetails = document.getElementById(`week-${semana}`);
+            weekDetails.classList.toggle('active');
+            const icon = weekDetails.previousElementSibling.querySelector('.fa-chevron-down');
+            icon.classList.toggle('rotate');
+        }
+
+        function toggleWeekTasks(semana) {
+            const details = document.getElementById(`week-tasks-${semana}`);
+            details.classList.toggle('active');
+            const icon = details.previousElementSibling.querySelector('.fa-chevron-down');
+            icon.classList.toggle('rotate');
+        }
+
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.classList.toggle('active');
+            const icon = section.previousElementSibling.querySelector('.fa-chevron-down');
+            icon.classList.toggle('rotate');
+        }
+    </script>
+</body>
+</html>

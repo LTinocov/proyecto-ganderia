@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Ganadero</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="worker-body">
+    <div class="worker-container">
+        <header class="worker-header">
+            <div class="header-content">
+                <div class="branding">
+                    <img src="https://cdn-icons-png.flaticon.com/512/194/194132.png" 
+                         alt="Logo Rancho" 
+                         class="brand-logo">
+                    <h1 class="brand-title">Sistema de Reportes Ganaderos</h1>
+                </div>
+                <div class="user-panel">
+                    <div class="user-info-display">
+                        <i class="fas fa-user"></i>
+                        <h3>{{ nombre_usuario }}</h3>
+                    </div>
+                    <div class="live-clock">
+                        <i class="fas fa-clock"></i>
+                        <span id="real-time-clock"></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="report-card">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="ranch-alert ranch-alert-{{ category }}">
+                            <div class="alert-icon">
+                                {% if category == 'success' %}
+                                <i class="fas fa-check-circle"></i>
+                                {% else %}
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {% endif %}
+                            </div>
+                            <div class="alert-content">
+                                <h3>{{ message }}</h3>
+                                <small>Última actualización: <span class="alert-time"></span></small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form class="ranch-form" action="{{ url_for('trabajador', codigo_usuario=codigo_usuario) }}" method="post">
+                <div class="form-header">
+                    <h2><i class="fas fa-pen-alt"></i> Nuevo Reporte</h2>
+                    <div class="report-counter">
+                        <i class="fas fa-clipboard-check"></i>
+                        Reportes hoy: {{ reportes_diarios }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="input-label">
+                        <i class="fas fa-hashtag"></i>
+                        Identificación del Animal
+                    </label>
+                    <div class="input-container">
+                        <input 
+                            type="text" 
+                            name="codigo_ganado" 
+                            placeholder="Ej: V-001"
+                            pattern="[A-Za-z0-9\-]{1,6}"
+                            title="Máximo 6 caracteres (letras, números o guiones)"
+                            maxlength="6"
+                            required
+                            class="ranch-input"
+                            id="animalCode"
+                        >
+                        <div class="char-counter"><span id="charCount">0</span>/6</div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="ranch-button primary">
+                        <i class="fas fa-bullhorn"></i>
+                        Registrar Animal
+                    </button>
+                </div>
+            </form>
+        </main>
+
+        <aside class="info-panel">
+            <div class="info-card task-panel">
+                <h3><i class="fas fa-clipboard-list"></i> Tareas para Hoy</h3>
+                
+                {% if tareas_asignadas %}
+                <div class="tasks-container">
+                    {% for tarea in tareas_asignadas %}
+                    <div class="task-card {{ tarea.estado }}">
+                        <div class="task-header" onclick="toggleTask({{ tarea.id }})">
+                            <div>
+                                <h4>{{ tarea.nombre }}</h4>
+                                <span class="task-time">{{ tarea.tiempo_estimado }}</span>
+                            </div>
+                            <div class="task-status">
+                                {{ tarea.estado|replace('_', ' ')|title }}
+                                {% if tarea.tiempo_total %}
+                                <span class="task-time">({{ tarea.tiempo_total }})</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="task-details" id="task-{{ tarea.id }}">
+                            <div class="task-instructions">
+                                <h5>Instrucciones:</h5>
+                                <p>{{ tarea.instrucciones }}</p>
+                            </div>
+                            
+                            <div class="task-controls">
+                                <button onclick="updateTask({{ tarea.id }}, 'en_progreso')"
+                                        {% if tarea.estado != 'pendiente' %}disabled{% endif %}
+                                        class="task-btn start">
+                                    <i class="fas fa-play"></i> Iniciar
+                                </button>
+                                
+                                <button onclick="updateTask({{ tarea.id }}, 'pausada')"
+                                        {% if tarea.estado != 'en_progreso' %}disabled{% endif %}
+                                        class="task-btn pause">
+                                    <i class="fas fa-pause"></i> Pausar
+                                </button>
+                                
+                                <button onclick="updateTask({{ tarea.id }}, 'completada')"
+                                        {% if tarea.estado not in ['en_progreso', 'pausada'] %}disabled{% endif %}
+                                        class="task-btn complete">
+                                    <i class="fas fa-check"></i> Completar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="no-tasks">
+                    <i class="fas fa-check-circle"></i>
+                    No tienes tareas asignadas para hoy
+                </div>
+                {% endif %}
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Actualizar reloj en tiempo real
+        function updateClock() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('real-time-clock').textContent = 
+                now.toLocaleDateString('es-MX', options);
+            
+            document.querySelectorAll('.alert-time').forEach(element => {
+                element.textContent = now.toLocaleTimeString('es-MX');
+            });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Contador de caracteres para el código del animal
+        document.getElementById('animalCode').addEventListener('input', function(e) {
+            document.getElementById('charCount').textContent = e.target.value.length;
+        });
+
+        // Mostrar/ocultar detalles de tarea
+        function toggleTask(taskId) {
+            const details = document.getElementById(`task-${taskId}`);
+            details.classList.toggle('visible');
+        }
+
+        // Actualizar estado de tarea via AJAX
+        function updateTask(taskId, newStatus) {
+            fetch('/actualizar_estado_tarea', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    asignacion_id: taskId,
+                    estado: newStatus
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    location.reload();
+                } else {
+                    alert('Error: ' + (data.error || 'Error desconocido'));
+                }
+            });
+        }
+    </script>
+</body>
+</html>

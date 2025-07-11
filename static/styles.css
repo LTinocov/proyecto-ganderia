@@ -1,0 +1,986 @@
+/* Variables de diseño */
+:root {
+    --ranch-primary: #4a7c59;      /* Verde establo */
+    --ranch-secondary: #8b5e3c;    /* Marrón cuero */
+    --ranch-accent: #d4a656;       /* Dorado trigo */
+    --ranch-light: #f4eee6;        /* Crema natural */
+    --ranch-dark: #2d2926;         /* Marrón oscuro */
+    --ranch-error: #c04545;        /* Rojo alerta */
+    --ranch-success: #4a7c59;      /* Verde éxito */
+    --ranch-info: #2c5282;         /* Azul información */
+}
+
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+    line-height: 1.6;
+    color: var(--ranch-dark);
+    background-color: var(--ranch-light);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Login */
+.login-body {
+    background: linear-gradient(135deg, var(--ranch-primary) 0%, var(--ranch-secondary) 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    padding: 2rem;
+    animation: slideUp 0.5s ease;
+}
+
+.ranch-logo {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1.5rem;
+    display: block;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.2));
+}
+
+.welcome-title {
+    text-align: center;
+    color: var(--ranch-dark);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--ranch-dark);
+    font-weight: 500;
+}
+
+.ranch-input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--ranch-secondary);
+    border-radius: 10px;
+    font-size: 1rem;
+    background: var(--ranch-light);
+    transition: all 0.3s ease;
+}
+
+.ranch-input:focus {
+    border-color: var(--ranch-primary);
+    box-shadow: 0 0 10px rgba(74, 124, 89, 0.2);
+    outline: none;
+}
+
+.input-container {
+    position: relative;
+}
+
+.char-counter {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.8);
+    padding: 0 5px;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    color: var(--ranch-secondary);
+}
+
+.login-btn, .ranch-button {
+    width: 100%;
+    padding: 1rem;
+    background: var(--ranch-primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.login-btn:hover, .ranch-button:hover {
+    background: var(--ranch-secondary);
+    transform: translateY(-2px);
+}
+
+.primary {
+    background: var(--ranch-primary);
+}
+
+/* ==================== TRABAJADOR ==================== */
+.worker-body {
+    background: var(--ranch-light);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.worker-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.worker-header {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: var(--ranch-light);
+    border-radius: 15px;
+}
+
+.header-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.branding {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.brand-logo {
+    width: 30px;
+    height: 30px;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+}
+
+.brand-title {
+    font-size: 1.4rem;
+    color: var(--ranch-dark);
+}
+
+.user-panel {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.user-info-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--ranch-light);
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.user-info-display h3 {
+    margin: 0;
+    color: var(--ranch-primary);
+    font-size: 1.2rem;
+}
+
+.live-clock {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--ranch-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.report-card {
+    background: var(--ranch-light);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.form-header h2 {
+    color: var(--ranch-primary);
+}
+
+.report-counter {
+    background: var(--ranch-accent);
+    color: var(--ranch-dark);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.info-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.task-panel {
+    height: 100%;
+}
+
+.tasks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Tarjeta de tarea */
+.task-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.task-card:hover {
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* Cabecera */
+.task-header {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.task-header:hover {
+    background: #f8f9fa;
+}
+
+.task-title h4 {
+    margin: 0;
+    color: var(--ranch-dark);
+    font-size: 1.1rem;
+}
+
+.task-time {
+    color: var(--ranch-secondary);
+    font-size: 0.9rem;
+}
+
+.task-status {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-weight: 500;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+/* Detalles */
+.task-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0 1rem;
+    background: #fff;
+}
+
+.task-details.visible {
+    max-height: 500px;
+    padding: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.task-instructions {
+    color: var(--ranch-dark);
+    margin-bottom: 1rem;
+}
+
+.task-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.task-btn {
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.task-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.task-btn.start {
+    background: var(--ranch-primary);
+    color: white;
+}
+
+.task-btn.pause {
+    background: var(--ranch-accent);
+    color: var(--ranch-dark);
+}
+
+.task-btn.complete {
+    background: var(--ranch-success);
+    color: white;
+}
+
+.no-tasks {
+    text-align: center;
+    padding: 2rem;
+    color: var(--ranch-secondary);
+    font-style: italic;
+}
+
+/* Estados de tareas */
+.task-card.pendiente .task-header {
+    background: #fff3cd;
+}
+.task-card.en_progreso .task-header {
+    background: #d1ecf1;
+}
+.task-card.completada .task-header {
+    background: #d4edda;
+}
+.task-card.pausada .task-header {
+    background: #f8d7da;
+}
+
+.task-status.pendiente .status-dot { background: var(--ranch-accent); }
+.task-status.en_progreso .status-dot { background: var(--ranch-primary); }
+.task-status.completada .status-dot { background: var(--ranch-success); }
+.task-status.pausada .status-dot { background: var(--ranch-error); }
+
+/* ==================== ADMINISTRADOR ==================== */
+.admin-body {
+    background: #f8f9fa;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.admin-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.admin-header {
+    background: linear-gradient(135deg, var(--ranch-primary) 0%, var(--ranch-secondary) 100%);
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    color: white;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-branding {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-logo {
+    width: 40px;
+    height: 40px;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+}
+
+.admin-title {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.admin-logout {
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.15);
+    transition: all 0.3s ease;
+}
+
+.admin-logout:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* Componentes comunes */
+.data-section {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.data-section h2 {
+    color: var(--ranch-primary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.styled-table, .reports-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.styled-table th,
+.styled-table td,
+.reports-table th,
+.reports-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.styled-table th,
+.reports-table th {
+    background: #f8f9fa;
+    color: var(--ranch-primary);
+    font-weight: 600;
+}
+
+.styled-table tbody tr:hover,
+.reports-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.action-btn {
+    padding: 0.5rem;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    transition: all 0.3s ease;
+}
+
+.delete-btn {
+    color: var(--ranch-error);
+    background: rgba(192, 69, 69, 0.1);
+}
+
+.delete-btn:hover {
+    background: rgba(192, 69, 69, 0.2);
+}
+
+.download-btn {
+    color: var(--ranch-primary);
+    background: rgba(74, 124, 89, 0.1);
+}
+
+.download-btn:hover {
+    background: rgba(74, 124, 89, 0.2);
+}
+
+.workers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.worker-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.worker-card:hover {
+    transform: translateY(-3px);
+}
+
+.worker-header {
+    padding: 1rem;
+    background: var(--ranch-light);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.worker-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.total-reports {
+    background: var(--ranch-secondary);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+
+.worker-reports {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.worker-reports.active {
+    max-height: 1000px;
+}
+
+.weekly-reports {
+    margin-top: 1.5rem;
+}
+
+.week-card {
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.week-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 1rem;
+    background: #f8f9fa;
+    transition: background 0.3s ease;
+}
+
+.week-header:hover {
+    background: #e9ecef;
+}
+
+.week-title {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.week-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.week-details.active {
+    max-height: 1000px;
+}
+
+.fa-chevron-down {
+    transition: transform 0.3s ease;
+}
+
+.rotate {
+    transform: rotate(180deg);
+}
+
+/* Formularios */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.day-selector, .worker-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.day-checkbox, .worker-checkbox {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--ranch-secondary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.day-checkbox:hover, .worker-checkbox:hover {
+    background: rgba(139, 94, 60, 0.1);
+}
+
+.day-checkbox input, .worker-checkbox input {
+    margin-right: 0.5rem;
+}
+
+/* Alertas */
+.ranch-alert {
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ranch-alert-success {
+    background: rgba(74, 124, 89, 0.1);
+    border: 1px solid var(--ranch-success);
+}
+
+.ranch-alert-error {
+    background: rgba(192, 69, 69, 0.1);
+    border: 1px solid var(--ranch-error);
+}
+
+.alert-icon {
+    font-size: 1.5rem;
+}
+
+.alert-content h3 {
+    margin-bottom: 0.3rem;
+}
+
+.alert-time {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .worker-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+    
+    .worker-header, .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .user-panel {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .day-selector, .worker-selector {
+        flex-direction: column;
+    }
+    
+    .task-controls {
+        flex-direction: column;
+    }
+    
+    .task-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .styled-table th,
+    .styled-table td,
+    .reports-table th,
+    .reports-table td {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .brand-title, .admin-title {
+        font-size: 1.2rem;
+    }
+}
+/* Estilos para el mensaje de bienvenida */
+.welcome-message {
+    color: white;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.welcome-message strong {
+    font-weight: 600;
+    color: var(--ranch-accent);
+}
+
+.admin-branding > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.fa-hand-wave {
+    animation: wave 2s infinite;
+    transform-origin: 70% 70%;
+}
+
+@keyframes wave {
+    0% { transform: rotate(0deg); }
+    10% { transform: rotate(-10deg); }
+    20% { transform: rotate(12deg); }
+    30% { transform: rotate(-10deg); }
+    40% { transform: rotate(9deg); }
+    50% { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+}
+/* Estilos para la nueva sección de tareas semanales */
+.week-task-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.week-task-header {
+    padding: 1rem;
+    background: #f8f9fa;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease;
+}
+
+.week-task-header:hover {
+    background: #e9ecef;
+}
+
+.week-title {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.badge {
+    background: var(--ranch-primary);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+}
+
+.week-task-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: white;
+}
+
+.week-task-details.active {
+    max-height: 1000px;
+    padding: 1rem;
+}
+
+.days-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.day-column {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.day-column h4 {
+    color: var(--ranch-primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.task-item {
+    background: white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.task-item h5 {
+    color: var(--ranch-dark);
+    margin-bottom: 0.5rem;
+}
+
+.task-item p {
+    font-size: 0.9rem;
+    color: var(--ranch-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+
+/* Estilos para el panel del trabajador */
+.tasks-container {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.tasks-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tasks-container::-webkit-scrollbar-thumb {
+    background: var(--ranch-secondary);
+    border-radius: 3px;
+}
+.task-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.week-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.fa-file-excel {
+    color: #1d6f42; /* Color verde de Excel */
+}   
+/* Secciones desplegables */
+.collapsible-section {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.section-header {
+    padding: 1rem 1.5rem;
+    background: #f8f9fa;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease;
+}
+
+.section-header:hover {
+    background: #e9ecef;
+}
+
+.section-header h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.section-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.section-content.active {
+    max-height: 5000px; /* Valor suficientemente grande */
+    padding: 1.5rem;
+}
+
+/* Mejoras para los botones de acción */
+.week-actions {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: center;
+}
+
+/* Ajustes para el formulario de tareas */
+.task-form {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
